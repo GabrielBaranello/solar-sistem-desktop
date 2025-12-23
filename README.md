@@ -1,5 +1,7 @@
 # Saturn Desktop
 
+![Saturn Desktop Demo](assets/showcase.gif)
+
 Animates Windows desktop icons to orbit like Saturn's rings.
 
 ## Requirements
