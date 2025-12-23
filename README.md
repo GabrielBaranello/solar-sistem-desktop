@@ -10,18 +10,20 @@ Animates Windows desktop icons to orbit like Saturn's rings.
 
 ## Usage
 
-1. Adjust the planet center coordinates in `main.py`:
+1. Right-click on desktop → View → Uncheck "Align icons to grid"
+
+2. Adjust the planet center coordinates in `main.py`:
    ```python
    cx, cy = 920, 500  # Planet center on your screen
    ```
 
-2. Adjust the orbit size:
+3. Adjust the orbit size:
    ```python
    a = 420   # Horizontal semi-axis (px)
    b = 100   # Vertical semi-axis (px)
    ```
 
-3. Run the script:
+4. Run the script:
    ```bash
    python main.py
    ```
