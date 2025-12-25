@@ -1,4 +1,5 @@
-import time, math, keyboard 
+import time, math, keyboard, ctypes
+import ctypes.wintypes as wt
 
 # Utility functions to play with
 from desktop_interact import (
@@ -18,25 +19,27 @@ from mouse_interact import (
 def animate_planet(
     center: tuple[int, int],
     semiaxes: tuple[int, int],
-    icons: tuple = tuple(()),
     radius: int,
-    mouse_speed_control: String = "ctrl",
+    image: str,
+    icons: tuple = (),
+    mouse_speed_control: str = "ctrl",
 ):
     cx, cy = center
     a, b = semiaxes
-    planet_r2 = int(radius) * int(radius)
+    planet_r2 = radius * radius
+    set_wallpaper(image)
 
-    # Base speeds
-    speed_base = 0.3        # rad/s (legacy / fallback)
-    speed_far = 0.6         # rad/s when mouse is far
-    speed_min = 0.12        # rad/s near the planet radius
-    speed_inside = 0.1     # rad/s when inside the planet
-    slow_band = 220         # px outside the radius where slowdown applies
+    # Velocidades
+    speed_base = 0.3
+    speed_far = 0.6
+    speed_min = 0.12
+    speed_inside = 0.1
+    slow_band = 220
 
     fps = 60.0
     dt_target = 1.0 / fps
 
-    # Where to hide icons (ListView client coordinates)
+    # Posición para ocultar íconos
     HIDE_X, HIDE_Y = -5000, -5000
 
     t0 = time.perf_counter()
@@ -44,6 +47,8 @@ def animate_planet(
     phase = 0.0
 
     while True:
+        if keyboard.is_pressed("ctrl+q"):
+            break
         count = get_item_count()
         if count <= 0:
             print("No icons")
@@ -53,7 +58,7 @@ def animate_planet(
         dt = now - last_t
         last_t = now
 
-        # --- Phase update ---
+        # --- Control de velocidad ---
         if mouse_speed_control == "dist":
             mx, my = get_mouse_screen_pos()
             dxm = mx - cx
@@ -65,52 +70,75 @@ def animate_planet(
             else:
                 tnorm = (dist - radius) / slow_band
                 tnorm = max(0.0, min(1.0, tnorm))
-                # smoothstep
-                tnorm = tnorm * tnorm * (3.0 - 2.0 * tnorm)
+                tnorm = tnorm * tnorm * (3.0 - 2.0 * tnorm)  # smoothstep
                 cur_speed = speed_min + (speed_far - speed_min) * tnorm
 
             phase += cur_speed * dt
+
         elif mouse_speed_control == "none":
-            # Original behaviour (time-based)
-            t = now - t0
-            phase = speed_base * t
+            phase = speed_base * (now - t0)
+
         elif mouse_speed_control == "ctrl":
-            t = now - t0
-            phase = speed_base * t
-            phase += keyboard.is_pressed("Ctrl") * 5
+            phase = speed_base * (now - t0)
+            if keyboard.is_pressed("ctrl"):
+                phase += 5 * dt
+
         else:
-            print("Entrada de comportamiento invalida...")
-            print("Calores validos: none, ctrl y dist.")
-            print(f"Valor introducido: {mouse_speed_control}.")
-            print("Modo constante iniciado")
-            t = now - t0
-            phase = speed_base * t
-        # --- Icon placement ---
+            print("Entrada de comportamiento invalida")
+            print("Valores validos: none, ctrl, dist")
+            phase = speed_base * (now - t0)
+
+        # --- Posicionamiento de íconos ---
         for i in range(count):
             base = (2.0 * math.pi) * (i / count)
             ang = base + phase
-            if not icons == null:
+
+            if icons:
                 it_has_to_display = get_icon_name(i) in icons
             else:
-                it_has_to_display = True             x = cx + a * math.cos(ang)
+                it_has_to_display = True
+
+            x = cx + a * math.cos(ang)
             y = cy + b * math.sin(ang)
 
-            # “Behind” the planet: back half of the orbit
             behind = math.sin(ang) < 0.0
 
-            # Occlusion by the planet disk
             dx = x - cx
             dy = y - cy
             occluded = (dx * dx + dy * dy) <= planet_r2
 
-            if behind and occluded:
-                move_icon(i, HIDE_X, HIDE_Y)
-            elif not it_has_to_display:
+            if (behind and occluded) or not it_has_to_display:
                 move_icon(i, HIDE_X, HIDE_Y)
             else:
                 move_icon(i, x, y)
 
         time.sleep(dt_target)
+
+def get_current_wallpaper() -> str:
+    SPI_GETDESKWALLPAPER = 0x0073
+    MAX_PATH = 260
+
+    buffer = ctypes.create_unicode_buffer(MAX_PATH)
+
+    ctypes.windll.user32.SystemParametersInfoW(
+        SPI_GETDESKWALLPAPER,
+        MAX_PATH,
+        buffer,
+        0
+    )
+    return buffer.value
+
+def set_wallpaper(image_path: str):
+    SPI_SETDESKWALLPAPER = 20
+    SPIF_UPDATEINIFILE = 1
+    SPIF_SENDCHANGE = 2
+
+    ctypes.windll.user32.SystemParametersInfoW(
+        SPI_SETDESKWALLPAPER,
+        0,
+        image_path,
+        SPIF_UPDATEINIFILE | SPIF_SENDCHANGE
+    )
 
 if __name__ == "__main__":
     ok = disable_snap_to_grid()
@@ -124,5 +152,29 @@ if __name__ == "__main__":
     # Ring: circle or ellipse (ellipse recommended for a ring-like look)
     a = 420   # horizontal semiaxis (px)
     b = 100   # vertical semiaxis   (px)
-
-    animate_planet((cx, cy), (a, b), 300)
+    
+    wall_paper = get_current_wallpaper() # geting wallpaper to change to it at the end of the script 
+    try:
+        while True: 
+            if planet == 1:
+                animate_planet((cx, cy), (a, b), 300)
+            elif planet == 2: 
+                animate_planet((cx, cy), (a, b), 300)
+            elif planet == 3: 
+                animate_planet((cx, cy), (a, b), 300)
+            elif planet == 4: 
+                animate_planet((cx, cy), (a, b), 300)
+            elif planet == 5: 
+                animate_planet((cx, cy), (a, b), 300)
+            elif planet == 6:
+                animate_planet((cx, cy), (a, b), 300)
+            elif planet == 7: 
+                animate_planet((cx, cy), (a, b), 300)
+            else:
+                planet = 1
+            if keyboard.is_pressed("ctrl+q"):
+                planet += 1
+                time.sleep(500)
+    finally:
+        set_wallpaper(wall_paper)
+        
