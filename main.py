@@ -1,4 +1,4 @@
-import time, math
+import time, math, keyboard 
 
 # Utility functions to play with
 from desktop_interact import (
@@ -15,11 +15,12 @@ from mouse_interact import (
 )
 
 
-def animate_saturn_rings(
+def animate_planet(
     center: tuple[int, int],
     semiaxes: tuple[int, int],
+    icons: tuple = tuple(()),
     radius: int,
-    mouse_speed_control: bool = True,
+    mouse_speed_control: String = "ctrl",
 ):
     cx, cy = center
     a, b = semiaxes
@@ -53,7 +54,7 @@ def animate_saturn_rings(
         last_t = now
 
         # --- Phase update ---
-        if mouse_speed_control:
+        if mouse_speed_control == "dist":
             mx, my = get_mouse_screen_pos()
             dxm = mx - cx
             dym = my - cy
@@ -69,17 +70,29 @@ def animate_saturn_rings(
                 cur_speed = speed_min + (speed_far - speed_min) * tnorm
 
             phase += cur_speed * dt
-        else:
+        elif mouse_speed_control == "none":
             # Original behaviour (time-based)
             t = now - t0
             phase = speed_base * t
-
+        elif mouse_speed_control == "ctrl":
+            t = now - t0
+            phase = speed_base * t
+            phase += keyboard.is_pressed("Ctrl") * 5
+        else:
+            print("Entrada de comportamiento invalida...")
+            print("Calores validos: none, ctrl y dist.")
+            print(f"Valor introducido: {mouse_speed_control}.")
+            print("Modo constante iniciado")
+            t = now - t0
+            phase = speed_base * t
         # --- Icon placement ---
         for i in range(count):
             base = (2.0 * math.pi) * (i / count)
             ang = base + phase
-
-            x = cx + a * math.cos(ang)
+            if not icons == null:
+                it_has_to_display = get_icon_name(i) in icons
+            else:
+                it_has_to_display = True             x = cx + a * math.cos(ang)
             y = cy + b * math.sin(ang)
 
             # “Behind” the planet: back half of the orbit
@@ -91,6 +104,8 @@ def animate_saturn_rings(
             occluded = (dx * dx + dy * dy) <= planet_r2
 
             if behind and occluded:
+                move_icon(i, HIDE_X, HIDE_Y)
+            elif not it_has_to_display:
                 move_icon(i, HIDE_X, HIDE_Y)
             else:
                 move_icon(i, x, y)
@@ -109,4 +124,5 @@ if __name__ == "__main__":
     # Ring: circle or ellipse (ellipse recommended for a ring-like look)
     a = 420   # horizontal semiaxis (px)
     b = 100   # vertical semiaxis   (px)
-    animate_saturn_rings((cx, cy), (a, b), 300)
+
+    animate_planet((cx, cy), (a, b), 300)
