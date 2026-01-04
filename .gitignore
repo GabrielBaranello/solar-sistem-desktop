@@ -7,10 +7,10 @@ __pycache__/
 *.pyd
 
 # Virtual environments
-.venv/
-venv/
-ENV/
-env/
+# .venv/
+# venv/
+# ENV/
+# env/
 
 # Python packaging / build
 build/
@@ -59,3 +59,10 @@ htmlcov/
 # Windows
 Thumbs.db
 desktop.ini
+
+# -------------------------------------------------
+forma.PNG
+run.bat
+launcher.vbs
+
+#*.vbs

@@ -1,45 +1,58 @@
-# Saturn Desktop
+# Solar Desktop
 
-![Saturn Desktop Demo](assets/showcase.gif)
+![Solar Sistem Desktop Demo](assets/showcase.gif)
 
-Animates Windows desktop icons to orbit like Saturn's rings.
+Animates Windows desktop icons to orbit like Saturn's rings in multiple planets.
 
 ## Requirements
 
-- Windows
-- Python 3.10+
-- A wallpaper with a planet in the center
+- Windows 10 or later
+- If you have python installed, you have to install  `keyboard` package:
+   ```bash
+   pip install keyboard
+   ```
 
 ## Usage
 
 1. Right-click on desktop → View → Uncheck "Align icons to grid"
 
-2. Adjust the planet center coordinates in `main.py`:
+2. Change "False" to "True" in [`main.py`](main.py) line 90 to enable mouse speed control:
    ```python
-   cx, cy = 920, 500  # Planet center on your screen
+   mouse_speed_control=True,
    ```
 
-3. Adjust the orbit size:
+3. Adjust the planet center coordinates in [`main.py`](main.py) line 221:
    ```python
-   a = 420   # Horizontal semi-axis (px)
-   b = 100   # Vertical semi-axis (px)
+   center=(650, 400),
    ```
 
-4. Run the script:
-   ```bash
-   python main.py
+4. Adjust the orbit size in [`main.py`](main.py) line 222:
+   ```python
+   semiaxes=(400, 80),
    ```
+
+5. Run the [`Test.bat`](Test.bat) file and repatt steps 2, 3 and 4 until you are satisfied with the result.
+
+6. When you adjusted the values to your liking, run the [`Install.bat`](Install.bat) file.
 
 ## Controls
 
 - Rotation speed changes based on mouse position
 - Closer to the center = slower rotation
+- Change within the planets with key F8
 
 ## Notes
 
-- The script automatically disables desktop "snap to grid"
+- The [`Install.bat`](Install.bat) file creates a scheduled task to run the script at user login so tou have to run it with administrator privileges.
+If you don't want to do thad you can program the task manually following this tutorial: [Create a scheduled task](https://drive.google.com/file/d/1sxFyAdkUedcGLT1QuUFWS_7ap41AO1rm/view?t=2)
 - Icons passing "behind" the planet are temporarily hidden
+- I highly recommend taking a screenshot of your desktop before running the script because the icons won't be restored to their original positions when the script ends.
 
 ## License
 
-MIT No Commercial - See [LICENSE](LICENSE) for details.
+This project is a derivative work based on: [Saturn-desktop](https://github.com/linkfy/saturn-desktop)
+
+Original Author: Antonio Cuenca Garcia (Linkfy)  
+License: MIT No Commercial License  
+
+Original license text: [Original lisense](https://github.com/linkfy/saturn-desktop/blob/main/LICENSE)
