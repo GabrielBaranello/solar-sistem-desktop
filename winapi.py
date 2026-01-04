@@ -1,3 +1,11 @@
+# Derived from:
+# https://github.com/linkfy/saturn-desktop/blob/main/winapi.py
+# Original Author: Antonio Cuenca Garcia (Linkfy)
+# License: MIT No Commercial License
+# Original license:
+# https://github.com/linkfy/saturn-desktop/blob/main/LICENSE
+#
+# Modifications by Gabriel Guido Baranello (2025)
 # -*- coding: utf-8 -*-
 import ctypes
 from ctypes import wintypes

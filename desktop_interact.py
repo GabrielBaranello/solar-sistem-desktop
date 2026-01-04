@@ -1,3 +1,12 @@
+# Derived from:
+# https://github.com/linkfy/saturn-desktop/blob/main/desktop_interact.py
+#
+# Original Author: Antonio Cuenca Garcia (Linkfy)
+# License: MIT No Commercial License
+# Original license:
+# https://github.com/linkfy/saturn-desktop/blob/main/LICENSE
+#
+# Modifications by Gabriel Guido Baranello (2025)
 import os
 from winapi import *
 
@@ -52,7 +61,7 @@ def get_icon_name(index):
 
     # Number of icons
     count = SendMessage(listview, LVM_GETITEMCOUNT, 0, 0)
-    print("[dbg] Desktop icons reported by ListView:", count)
+    #print("[dbg] Desktop icons reported by ListView:", count)
     if index < 0 or index >= count:
         print("Index out of range")
         return None
